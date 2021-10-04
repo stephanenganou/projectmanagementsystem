@@ -1,0 +1,29 @@
+﻿
+@model PMSystem.Models.Login
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    @using (Html.BeginForm("Index", "Login",
+        new { ReturnUrl = Request.QueryString["ReturnUrl"] },
+        FormMethod.Post,
+        new { @class = "form-signin" }))
+    {
+        if (IsPost)
+        {
+            <div class="alert alert-danger">@Html.ValidationSummary()</div>
+        }
+        <h2 class="form-signin-heading">Bitte einloggen</h2>
+        @Html.LabelFor(m => m.Username, "Email Addresse", new { @class = "control-label" })
+        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Email Addresse", autofocus = "" })
+        @Html.ValidationMessageFor(m => m.Username)
+        <label for="password" class="control-label">Password</label>
+        <input type="password" name="password" class="form-control" placeholder="Passwort">
+        @Html.ValidationMessageFor(m => m.Password)
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <div>
+            <a href="mailto:admin@ymail.com">Administrator kontaktieren</a>
+        </div>
+    }
+</div>

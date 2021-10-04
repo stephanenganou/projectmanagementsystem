@@ -1,0 +1,113 @@
+﻿@model IEnumerable<PMSystem.Models.Project>
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    th {
+        padding: 5px;
+    }
+    td {
+        padding: 5px;
+    }
+</style>
+
+<h2>Project</h2>
+<h3>Dashboard von: @ViewBag.Currentuser</h3>
+
+<body>
+    @if (ViewBag.Currentuser != null && ViewBag.Currentuser.Equals("admin@ymail.com"))
+    {
+        <h3>Projektliste</h3>
+        <hr />
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Owner</th>
+                <th>Bearbeiten</th>
+                <th>Löschen</th>
+            </tr>
+            @foreach (PMSystem.Models.Project project in ViewBag.Users)
+            {
+                <tr>
+                    <td>@project.Id</td>
+                    <td>@Html.ActionLink(linkText: project.Name, actionName: "Details", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                    <td>@project.Status</td>
+                    @if (project.Owner != null)
+                    {
+                        <td>@project.Owner.Vorname @project.Owner.Nachname</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>@Html.ActionLink(linkText: "Bearbeiten", actionName: "Edit", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                    <td>@Html.ActionLink(linkText: "Löschen", actionName: "Delete", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                </tr>
+            }
+        </table>
+    }
+
+    @if (ViewBag.UserLevel.Equals("2") || ViewBag.UserLevel.Equals("3") || ViewBag.Currentuser.Equals("admin@ymail.com"))
+    {
+        <h3>Meine Projekte</h3>
+
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th>Projektname</th>
+                <th>Details</th>
+                <th>Bearbeiten</th>
+            </tr>
+            @foreach (PMSystem.Models.Project project in ViewBag.Users)
+            {
+                if (project.Owner != null && ViewBag.Currentuser.Equals(project.Owner.Email))
+                {
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>@Html.ActionLink(linkText: "Details", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                        <td>@Html.ActionLink(linkText: "Bearbeiten", actionName: "Edit", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="4">@Html.ActionLink("Neues Projekt erstellen", "Create")</td>
+            </tr>
+        </table>
+    }
+
+    <h3>Mir zugewiesene Subtasks</h3>
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <th>Subtask-Projekt</th>
+            <th>Subtask-ID</th>
+            <th>Subtask-Name</th>
+            <th>Zugeordneter Benutzer</th>
+            <th>Subtask-Beschreibung</th>
+            <th>Subtask-Status</th>
+        </tr>
+
+        @foreach (PMSystem.Models.Project project in ViewBag.Users)
+        {
+            foreach (PMSystem.Models.Task task in project.Tasks)
+            {
+                foreach (PMSystem.Models.SubTask subtask in task.SubTasks)
+                {
+                    if (subtask.User != null && subtask.User.Email.Equals(ViewBag.Currentuser))
+                    {
+                        <tr>
+                            <td>@Html.ActionLink(linkText: project.Name, actionName: "Details", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>
+                            <td>@subtask.Id</td>
+                            <td>@Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = project.Id, s_ID = subtask.Id }, htmlAttributes: null)</td>
+                            <td>@subtask.User.Vorname  @subtask.User.Nachname</td>
+                            <td>@subtask.Description</td>
+                            <td>@subtask.Status</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </table>
+</body>
+

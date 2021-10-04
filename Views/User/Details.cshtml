@@ -1,0 +1,113 @@
+﻿@model PMSystem.Models.User
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Vorname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Vorname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nachname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nachname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Passwort)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Passwort)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Level)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Level)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PLZ)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PLZ)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Bundesland)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bundesland)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Land)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Land)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Postfach)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Postfach)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefonnummer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telefonnummer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Faxnummer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faxnummer)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Bearbeiten", "Edit", new { u_ID = Model.Id })
+</p>

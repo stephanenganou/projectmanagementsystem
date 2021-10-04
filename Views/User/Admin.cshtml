@@ -1,0 +1,35 @@
+﻿@model IEnumerable<PMSystem.Models.User>
+@{
+    ViewBag.Title = "Admin Seite";
+}
+
+<h2>Admin</h2>
+
+<div>
+    @Html.ActionLink("Neuen Benutzer anlegen", "Create")
+</div>
+
+
+<body>
+    <h3>Benutzerliste</h3>
+    <hr />
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Land</th>
+            <th>Country</th>
+        </tr>
+        @foreach (PMSystem.Models.User user in Model)
+        {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Nachname</td>
+            <td>@user.Bundesland</td>
+            <td>@user.Land</td>
+            <td>@Html.ActionLink(linkText: "Bearbeiten", actionName: "Edit", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
+            <td>@Html.ActionLink(linkText: "Löschen", actionName: "Delete", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
+        </tr>
+        }
+    </table>
+</body>

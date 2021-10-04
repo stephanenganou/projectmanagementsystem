@@ -1,0 +1,50 @@
+﻿@model PMSystem.Models.SubTask
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SubTask</h4>
+    <hr />
+    <table>
+        <tr>
+            <th>Projekt-ID:</th>
+            <td>@ViewBag.Subtask.Id</td>
+        </tr>
+        <tr>
+            <th>Name:</th>
+            <td>@ViewBag.Subtask.Name</td>
+        </tr>
+        <tr>
+            <th>Beschreibung:</th>
+            <td>@ViewBag.Subtask.Description</td>
+        </tr>
+        <tr>
+            <th>Zugeordneter Benutzer:</th>
+            <td>@ViewBag.Subtask.User.Vorname  @ViewBag.Subtask.User.Nachname</td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td>@ViewBag.Subtask.Status</td>
+        </tr>
+        <tr>
+            <th>Dauer:</th>
+            <td>@ViewBag.Subtask.Duration</td>
+        </tr>
+        <tr>
+            <th>Start:</th>
+            <td>@ViewBag.Subtask.Start</td>
+        </tr>
+        <tr>
+            <th>Ende:</th>
+            <td>@ViewBag.Subtask.End</td>
+        </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Bearbeiten", "Edit", new { p_ID = ViewBag.ProjectID, s_ID = ViewBag.Subtask.Id }) |
+    @Html.ActionLink(linkText: "Zurück zur Projektübersicht", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = ViewBag.ProjectID }, htmlAttributes: null)
+</p>

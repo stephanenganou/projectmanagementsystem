@@ -1,0 +1,20 @@
+﻿@model PMSystem.Models.User
+@{
+    ViewBag.Title = "Benutzerinformationen";
+}
+
+<h2>Mein Konto</h2>
+
+<h3>Benutzer-Informationen</h3>
+
+<p>
+    <b>Vorname:</b> @Model.Vorname <br />
+    <b>Nachname:</b> @Model.Nachname <br />
+    <b>E-Mail-Adresse:</b> @Model.Email <br />
+    <b>Anschrift:</b> @Model.Address, @Model.PLZ, @Model.Bundesland <br />
+    <b>Level:</b> @Model.Level
+</p>
+
+<p>
+    @Html.ActionLink("Bearbeiten", "Edit", new { u_ID = Model.Id })
+</p>
