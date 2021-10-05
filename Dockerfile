@@ -1,14 +1,18 @@
-#FROM node:15-alpine as builder
-FROM node:15-alpine
-WORKDIR /home/app/client
-COPY ./package.json ./
-RUN npm install
-COPY . .
-CMD ["npm", "run", "start"]
+# Get base SDK Image from Microsoft
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-env
+WORKDIR /app
 
-#RUN npm run build
+#Copy the CSPROJ file and restore and dependencies (via NUGET)
+COPY *.csproj ./
+RUN dotnet restore
 
-#FROM nginx:latest
-#EXPOSE 3000
-#COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-#COPY --from=builder /home/app/build /usr/share/nginx/html
+#Copy the project files and build our realease
+COPY . ./
+RUN dotnet publish --configuration Release --output out
+
+#Generate runtime Image
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+WORKDIR /app
+EXPOSE 8001
+COPY --from=build-env /app/out ./
+ENTRYPOINT ["dotnet", "PMSystem.dll"]
