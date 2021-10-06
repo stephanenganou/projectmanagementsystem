@@ -1,18 +1,8 @@
 # Get base SDK Image from Microsoft
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
-WORKDIR /app
-
-#Copy the CSPROJ file and restore and dependencies (via NUGET)
-COPY *.csproj ./
-RUN dotnet restore
-
-#Copy the project files and build our realease
-COPY . ./
-RUN dotnet publish "mvc-sample-app.csproj" -c Release -o publish
-
 #Generate runtime Image
-FROM mcr.microsoft.com/dotnet/sdk:5.0
+FROM mcr.microsoft.com/dotnet/framework/sdk:3.5
 WORKDIR /app
 EXPOSE 44304
-COPY --from=build-env /app/publish .
+COPY ./bin/app.publish/ .
+WORKDIR ./bin
 ENTRYPOINT ["dotnet", "PMSystem.dll"]

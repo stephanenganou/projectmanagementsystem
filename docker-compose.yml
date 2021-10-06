@@ -13,16 +13,11 @@ services:
       - MYSQL_USER=pmapp
       - MYSQL_PASSWORD=mlapp21
 
-  api: #Service 2: .Net Server
+  pmsystem: #Service 2: .Net Server
     restart: on-failure
     build:
-      context: ./Python-Server
+      context: ./PMSystem
       dockerfile: Dockerfile
-    environment:
-      - DB_HOST=mysql
-      - DB_NAME=maarbeit
-      - DB_USER=mlapp
-      - DB_PASSWORD=mlapp21
     depends_on:
       - mysql
     links:
