@@ -60,7 +60,7 @@
                 <th>Details</th>
                 <th>Bearbeiten</th>
             </tr>
-            @foreach (PMSystem.Models.Project project in ViewBag.Users)
+            @foreach (PMSystem.Models.Project project in ViewBag.Projects)
             {
                 if (project.Owner != null && ViewBag.Currentuser.Equals(project.Owner.Email))
                 {

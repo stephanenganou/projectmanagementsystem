@@ -12,52 +12,40 @@
     <p>Status: @Model.Status %</p>
     @if (Model.Owner != null && !(Model.Owner.Equals("")))
     {
-        <p>Projekt-Owner: @Model.Owner.Vorname @Model.Owner.Nachname</p>
-    }
+<p>Projekt-Owner: @Model.Owner.Vorname @Model.Owner.Nachname</p>}
     <h3>Tasks</h3>
 
     @foreach (PMSystem.Models.Task task in Model.Tasks)
     {
         if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
         {
-            <h4>Task: @Html.ActionLink(linkText: task.Name, actionName: "Details", controllerName: "Task", routeValues: new { p_ID = Model.Id, t_ID = task.Id }, htmlAttributes: null) (ID: @task.Id)</h4>
-        }
-        else
-        {
-            <h4>Task: @task.Name</h4>
-        }
-        <p>Status: @task.Status</p>
-        <p>Beschreibung: @task.Description</p>
-        if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
-        {
-            <p>@Html.ActionLink(linkText: "Task löschen", actionName: "Delete", controllerName: "Task", routeValues: new { t_ID = task.Id }, htmlAttributes: null)</p>
-        }
-        <h4>Subtasks von @task.Name</h4>
-        foreach (PMSystem.Models.SubTask subtask in task.SubTasks)
-        {
-            if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
-            {
-                <p>Subtask: @Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = Model.Id, s_ID = subtask.Id }, htmlAttributes: null) (@subtask.Id)</p>
-            }
-            else
-            {
-                <p>Subtask: @subtask.Name</p>
-            }
-            <p>Status: @subtask.Status</p>
-            <p>Beschreibung: @subtask.Description</p>
-            if (subtask.User != null)
-            {
-                <p>Verantwortlicher User: @subtask.User.Vorname @subtask.User.Nachname</p>
-            }
-            if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
-            {
-                <p>@Html.ActionLink(linkText: "Subtask löschen", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</p>
-            }
-        }
-    }
+<h4>Task: @Html.ActionLink(linkText: task.Name, actionName: "Details", controllerName: "Task", routeValues: new { p_ID = Model.Id, t_ID = task.Id }, htmlAttributes: null) (ID: @task.Id)</h4> }
+                else
+                {
+<h4>Task: @task.Name</h4> }
+<p>Status: @task.Status</p>
+                <p>Beschreibung: @task.Description</p> if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
+                                {
+                <p>@Html.ActionLink(linkText: "Task löschen", actionName: "Delete", controllerName: "Task", routeValues: new { t_ID = task.Id }, htmlAttributes: null)</p> }
+                <h4>Subtasks von @task.Name</h4> foreach (PMSystem.Models.SubTask subtask in task.SubTasks)
+                                {
+                                    if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
+                                    {
+                <p>Subtask: @Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = Model.Id, s_ID = subtask.Id }, htmlAttributes: null) (@subtask.Id)</p> }
+                                    else
+                                    {
+                <p>Subtask: @subtask.Name</p> }
+                <p>Status: @subtask.Status</p>
+                                    <p>Beschreibung: @subtask.Description</p> if (null != subtask.User)
+                                                        {
+                                    <p>Verantwortlicher User: @subtask.User.Vorname @subtask.User.Nachname</p> }
+                                                        if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
+                                                        {
+                                    <p>@Html.ActionLink(linkText: "Subtask löschen", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</p>}
+                                                    }
+                                                }
 
-    @if (ViewBag.Currentuser.Equals(Model.Owner.Email) || ViewBag.Currentuser.Equals("admin@ymail.com"))
-    {
-        @Html.ActionLink(linkText: "Projekt bearbeiten", actionName: "Edit", controllerName: "Project", routeValues: new { p_ID = Model.Id }, htmlAttributes: null)
-    }
+@if ((Model.Owner != null && Model.Owner.Email.Equals(ViewBag.Currentuser)) || "admin@ymail.com".Equals(ViewBag.Currentuser))
+{
+@Html.ActionLink(linkText: "Projekt bearbeiten", actionName: "Edit", controllerName: "Project", routeValues: new { p_ID = Model.Id }, htmlAttributes: null)}
 </div>

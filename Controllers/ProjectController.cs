@@ -10,7 +10,8 @@ using System.Web.Mvc;
 
 namespace PMSystem.Controllers
 {
-    [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
+    //It make sure to check for a valide user before allowing access to this action(s)
+    [Authorize]
     public class ProjectController : Controller
     {
         PMSystemDbContext context;
@@ -34,18 +35,15 @@ namespace PMSystem.Controllers
             ViewBag.UserLevel = user.Level.ToString();
 
 
-            if (user != null)
+            if (null != user)
                 {
                     ViewBag.Projects = user.AssignedProjects;
                     List<Project> allProjects = new List<Project>();
-                    foreach (User user_iterator in context.Users)
+                    foreach (Project project in context.Projects)
                     {
-                        foreach (Project project_iterator in user_iterator.AssignedProjects)
+                        if (!(allProjects.Contains(project)))
                         {
-                            if (!(allProjects.Contains(project_iterator)))
-                            {
-                                allProjects.Add(project_iterator);
-                            }
+                           allProjects.Add(project);
                         }
                     }
                     ViewBag.Users = allProjects;
@@ -66,32 +64,28 @@ namespace PMSystem.Controllers
             if (!(String.IsNullOrEmpty(p_ID)))
             {
                 int id = int.Parse(p_ID);
-                List<Project> allProjects = new List<Project>();
-                Project project = new Project();
-                foreach (User user_iterator in context.Users)
+
+                Project matchedProject = null;
+                
+                foreach (Project project in context.Projects)
                 {
-                    allProjects.AddRange(user_iterator.AssignedProjects);
-                }
-                foreach (Project proj_iterator in allProjects)
-                {
-                    if(proj_iterator.Id == id)
+                    if(project.Id == id)
                     {
-                        project = proj_iterator;
+                        matchedProject = project;
                     }
                 }
-                if (project != null)
+                if (null != matchedProject)
                 {
-                    //ViewBag.Tasks = context.Tasks.Where(t => t.Project.Id == project.Id).ToList();
-                    return View(project);
+                    return View(matchedProject);
                 }
                 else
                 {
-                    ViewBag.Errormessage = "Das Projekt mit der ID: " + p_ID + "wurde nicht gefunden";
+                    ViewBag.Errormessage = "The project with ID: " + p_ID + "was not found";
                     return View();
                 }
             }
 
-            ViewBag.Errormessage = "Keine ID wurde eingegeben";
+            ViewBag.Errormessage = "No ID was entered";
             return View();
 
         }
@@ -141,7 +135,7 @@ namespace PMSystem.Controllers
                         {
                             project.Owner = currentUser;
                             project.AssignedUsers.Add(currentUser);
-                            if(currentUser.Id != 1)
+                            if(currentUser.Id < 2)
                             {
                                 currentUser.Level = 2;
                                 context.Users.AddOrUpdate(currentUser);
@@ -153,7 +147,7 @@ namespace PMSystem.Controllers
                             User p_User = context.Users.FirstOrDefault(u => u.Id == temp_ID);
                             project.Owner = p_User;
                             project.AssignedUsers.Add(p_User);
-                            if(p_User.Id != 1)
+                            if(p_User.Id < 2)
                             {
                                 p_User.Level = 2;
                                 context.Users.AddOrUpdate(p_User);
