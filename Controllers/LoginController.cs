@@ -49,8 +49,8 @@ namespace PMSystem.Controllers
                     return Redirect(FormsAuthentication.GetRedirectUrl(user.Email, false));
                 }
             }
-
-            ViewBag.Failed = true;
+                  
+            ViewBag.Errormessage = "Authentication Failure";
             return View(request);
         }
     }
