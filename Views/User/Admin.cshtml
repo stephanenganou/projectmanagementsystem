@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PMSystem.Models.User>
 @{ ViewBag.Title = "Admin Page"; }
 
-if (null != ViewBag.Errormessage)
+@if (null != ViewBag.Errormessage)
 {
     <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }

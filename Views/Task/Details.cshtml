@@ -2,7 +2,7 @@
 
 @{ ViewBag.Title = "Details for task"; }
 
-if (null != ViewBag.Errormessage)
+@if (null != ViewBag.Errormessage)
 {
     <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
