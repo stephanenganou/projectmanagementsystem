@@ -1,20 +1,23 @@
 ﻿@model PMSystem.Models.User
-@{
-    ViewBag.Title = "Benutzerinformationen";
+@{ ViewBag.Title = "User Information"; }
+
+@if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
-<h2>Mein Konto</h2>
+<h2>My Account</h2>
 
-<h3>Benutzer-Informationen</h3>
+<h3>User Information</h3>
 
 <p>
-    <b>Vorname:</b> @Model.Vorname <br />
-    <b>Nachname:</b> @Model.Nachname <br />
-    <b>E-Mail-Adresse:</b> @Model.Email <br />
-    <b>Anschrift:</b> @Model.Address, @Model.PLZ, @Model.Bundesland <br />
+    <b>First name:</b> @Model.Vorname <br />
+    <b>Last name:</b> @Model.Nachname <br />
+    <b>E-Mail-Adress:</b> @Model.Email <br />
+    <b>Address:</b> @Model.Address, @Model.PLZ, @Model.Bundesland <br />
     <b>Level:</b> @Model.Level
 </p>
 
 <p>
-    @Html.ActionLink("Bearbeiten", "Edit", new { u_ID = Model.Id })
+    @Html.ActionLink("Edit", "Edit", new { u_ID = Model.Id })
 </p>

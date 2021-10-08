@@ -35,7 +35,6 @@ namespace PMSystem.Controllers
             ViewBag.Currentuser = User.Identity.Name;
             ViewBag.UserLevel = user.Level.ToString();
 
-
             if (null != user)
                 {
                     ViewBag.Projects = user.AssignedProjects;
@@ -51,8 +50,8 @@ namespace PMSystem.Controllers
                     ViewBag.Subtasks = context.SubTasks.ToList();
                     return View(user.AssignedProjects);
                 }
-            
-            Console.WriteLine("No authentificated User found.");
+
+            ViewBag.Errormessage = "No authentificated User found.";
             return View();
         }
 

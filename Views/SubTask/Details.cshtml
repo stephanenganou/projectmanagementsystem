@@ -1,7 +1,10 @@
 ﻿@model PMSystem.Models.SubTask
 
-@{
-    ViewBag.Title = "Details";
+@{ ViewBag.Title = "Details for subtask"; }
+
+@if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>Details</h2>
@@ -45,6 +48,6 @@
     </table>
 </div>
 <p>
-    @Html.ActionLink("Bearbeiten", "Edit", new { p_ID = ViewBag.ProjectID, s_ID = ViewBag.Subtask.Id }) |
-    @Html.ActionLink(linkText: "Zurück zur Projektübersicht", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = ViewBag.ProjectID }, htmlAttributes: null)
+    @Html.ActionLink("Edit", "Edit", new { p_ID = ViewBag.ProjectID, s_ID = ViewBag.Subtask.Id }) |
+    @Html.ActionLink(linkText: "Go back to project overview", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = ViewBag.ProjectID }, htmlAttributes: null)
 </p>

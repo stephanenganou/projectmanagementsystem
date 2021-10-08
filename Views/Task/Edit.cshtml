@@ -1,81 +1,82 @@
 ﻿@model PMSystem.Models.Task
 
-@{
-    ViewBag.Title = "Edit";
+@{ ViewBag.Title = "Edit task"; }
+
+@if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>Edit</h2>
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Task</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Id)
+@Html.AntiForgeryToken()
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                <div class="form-horizontal">
+                    <h4>Task</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
-    <div>
-        @Html.ActionLink(linkText: "Neuen Subtask hinzufügen", actionName: "Create", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, t_ID = Model.Id }, htmlAttributes: null)
-    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
-    <h3>Subtasks</h3>
+                    <div>
+                        @Html.ActionLink(linkText: "Neuen Subtask hinzufügen", actionName: "Create", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, t_ID = Model.Id }, htmlAttributes: null)
+                    </div>
 
-    <table>
+                    <h3>Subtasks</h3>
+
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Delete</th>
+                        </tr>
+                        @foreach (PMSystem.Models.SubTask subtask in Model.SubTasks)
+                        {
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Benutzer</th>
-            <th>Status</th>
-            <th>Löschen</th>
-        </tr>
-        @foreach (PMSystem.Models.SubTask subtask in Model.SubTasks)
-        {
-            <tr>
-                <td>@subtask.Id</td>
-                <td>@Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, s_ID = subtask.Id }, htmlAttributes: null)</td>
-                <td>@subtask.Description</td>
-                <td>@subtask.User.Vorname @subtask.User.Nachname</td>
-                <td>@subtask.Status</td>
-                <td>@Html.ActionLink(linkText: "Subtask löschen", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</td>
-            </tr>
-        }
-    </table>
+            <td>@subtask.Id</td>
+            <td>@Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, s_ID = subtask.Id }, htmlAttributes: null)</td>
+            <td>@subtask.Description</td>
+            <td>@subtask.User.Vorname @subtask.User.Nachname</td>
+            <td>@subtask.Status</td>
+            <td>@Html.ActionLink(linkText: "Delete subtask", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</td>
+        </tr>}
+                    </table>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </div>
-</div>
-}
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>}
 
 <div>
-    @Html.ActionLink(linkText: "Zurück zur Projektübersicht", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = ViewBag.ProjectID }, htmlAttributes: null)
+    @Html.ActionLink(linkText: "Go back to project overview", actionName: "Details", controllerName: "Project", routeValues: new { p_ID = ViewBag.ProjectID }, htmlAttributes: null)
 </div>

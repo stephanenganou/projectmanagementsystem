@@ -1,6 +1,9 @@
 ﻿@model PMSystem.Models.Project
-@{
-    ViewBag.Title = "View";
+@{ ViewBag.Title = "View"; }
+
+@if(null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>View</h2>
