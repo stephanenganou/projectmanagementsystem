@@ -10,9 +10,10 @@
         FormMethod.Post,
         new { @class = "form-signin" }))
     {
-        if (IsPost)
+        
+        if (null != ViewBag.Errormessage)
         {
-            <div class="alert alert-danger">@Html.ValidationSummary()</div>
+            <div class="alert alert-danger">@ViewBag.Errormessage</div>
         }
         <h2 class="form-signin-heading">Bitte einloggen</h2>
         @Html.LabelFor(m => m.Username, "Email Addresse", new { @class = "control-label" })

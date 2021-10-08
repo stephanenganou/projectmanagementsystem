@@ -3,7 +3,7 @@ using PMSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Diagnostics;
+using PMSystem.Utility;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,11 +14,12 @@ namespace PMSystem.Controllers
     [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
     public class SubTaskController : Controller
     {
-        PMSystemDbContext context;
+        private static string ADMIN_FEATURE = "admin@ymail.com";
+        private PMSystemDbContext context;
 
         public SubTaskController()
         {
-            this.context = new PMSystemDbContext();
+            context = new PMSystemDbContext();
         }
 
         //um den angemeldeten User zu bekommen
@@ -42,7 +43,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (!(String.IsNullOrEmpty(s_ID)))
+            if (!TextUtil.checkIfEmpty(s_ID))
             {
                 int id = int.Parse(s_ID);
                 int pid = int.Parse(p_ID);
@@ -122,7 +123,7 @@ namespace PMSystem.Controllers
                     Task task = context.Tasks.FirstOrDefault(u => u.Id == taskID);
                     Project project = context.Projects.FirstOrDefault(p => p.Id == projectID);
 
-                    if (currentUser.Id != 1 && currentUser.Id != project.Owner.Id)
+                    if (currentUser.Email != ADMIN_FEATURE && currentUser.Id != project.Owner.Id)
                     {
                         ViewBag.Errormessage = "Sie haben keine Berechtigung";
                         return RedirectToAction("Index", "Project");
@@ -137,7 +138,7 @@ namespace PMSystem.Controllers
                     subtask.Status = float.Parse(collection["Status"]);
                     subtask.Task = task;
                     
-                    if(String.IsNullOrEmpty(collection["User"]))
+                    if(TextUtil.checkIfEmpty(collection["User"]))
                     {
                         subtask.User = currentUser;
                     }
@@ -200,7 +201,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (!(String.IsNullOrEmpty(s_ID)))
+            if (!TextUtil.checkIfEmpty(s_ID))
             {
                 int id = int.Parse(s_ID);
                 SubTask subtask = context.SubTasks.FirstOrDefault(u => u.Id == id);
@@ -279,7 +280,7 @@ namespace PMSystem.Controllers
 
                         Project project = context.Projects.FirstOrDefault(p => p.Id == projectID);
 
-                        if (currentUser.Id == 1 || currentUser.Id == project.Owner.Id || currentUser.Id == subtask.User.Id)
+                        if (currentUser.Email == ADMIN_FEATURE || currentUser.Id == project.Owner.Id || currentUser.Id == subtask.User.Id)
                         {
                             subtask.Name = collection["Name"];
                             subtask.Description = collection["Description"];
@@ -288,7 +289,7 @@ namespace PMSystem.Controllers
                             subtask.Start = DateTime.Parse(collection["Start"]);
                             subtask.End = DateTime.Parse(collection["End"]);
                             //Assign Users
-                            if (String.IsNullOrEmpty(collection["User"]))
+                            if (TextUtil.checkIfEmpty(collection["User"]))
                             {
                                 //Wir machen nix
                             }
@@ -358,7 +359,7 @@ namespace PMSystem.Controllers
         // GET: SubTask/Delete/subtask_ID
         public ActionResult Delete(string s_ID)
         {
-            if (!(String.IsNullOrEmpty(s_ID)))
+            if (!TextUtil.checkIfEmpty(s_ID))
             {
                 int id = int.Parse(s_ID);
 
@@ -404,7 +405,7 @@ namespace PMSystem.Controllers
                         }
                     }
 
-                    if (project.Owner.Id == currentUser.Id || currentUser.Id == 1)
+                    if (project.Owner.Id == currentUser.Id || currentUser.Email == ADMIN_FEATURE)
                     {
 
                         //Aktualisierung des 'Projekt' und 'Subtask' status.

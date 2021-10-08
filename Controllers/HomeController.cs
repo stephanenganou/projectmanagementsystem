@@ -1,24 +1,22 @@
 ﻿using PMSystem.DataAccess;
 using PMSystem.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace PMSystem.Controllers
 {
     public class HomeController : Controller
     {
-        PMSystemDbContext context;
+        private PMSystemDbContext context;
+
+        private User getCurrentUser()
+        {
+            return context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
+        }
 
         public HomeController()
         {
             this.context = new PMSystemDbContext();
-        }
-        public User getCurrentUser()
-        {
-            return context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
         }
         public ActionResult Index()
         {
