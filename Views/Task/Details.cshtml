@@ -1,7 +1,10 @@
 ﻿@model PMSystem.Models.Task
 
-@{
-    ViewBag.Title = "Details";
+@{ ViewBag.Title = "Details for task"; }
+
+if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>Details</h2>
@@ -40,24 +43,23 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Benutzer</th>
+            <th>Description</th>
+            <th>User</th>
             <th>Status</th>
-            <th>Löschen</th>
+            <th>Delete</th>
         </tr>
         @foreach (PMSystem.Models.SubTask subtask in ViewBag.Subtasks)
         {
-            <tr>
-                <td>@subtask.Id</td>
-                <td>@Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, s_ID = subtask.Id }, htmlAttributes: null)</td>
-                <td>@subtask.Description</td>
-                <td>@subtask.User.Vorname  @subtask.User.Nachname</td>
-                <td>@subtask.Status</td>
-                <td>@Html.ActionLink(linkText: "Subtask löschen", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</td>
-            </tr>
-        }
+<tr>
+    <td>@subtask.Id</td>
+    <td>@Html.ActionLink(linkText: subtask.Name, actionName: "Details", controllerName: "SubTask", routeValues: new { p_ID = ViewBag.ProjectID, s_ID = subtask.Id }, htmlAttributes: null)</td>
+    <td>@subtask.Description</td>
+    <td>@subtask.User.Vorname  @subtask.User.Nachname</td>
+    <td>@subtask.Status</td>
+    <td>@Html.ActionLink(linkText: "Delete subtask", actionName: "Delete", controllerName: "SubTask", routeValues: new { s_ID = subtask.Id }, htmlAttributes: null)</td>
+</tr>}
     </table>
 </div>
 <p>
-    @Html.ActionLink("Task bearbeiten", "Edit", new { p_ID = ViewBag.ProjectID, t_ID = Model.Id })
+    @Html.ActionLink("Edit task", "Edit", new { p_ID = ViewBag.ProjectID, t_ID = Model.Id })
 </p>

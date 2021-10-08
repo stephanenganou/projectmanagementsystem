@@ -1,12 +1,15 @@
 ﻿@model IEnumerable<PMSystem.Models.User>
-@{
-    ViewBag.Title = "Admin Seite";
+@{ ViewBag.Title = "Admin Page"; }
+
+if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>Admin</h2>
 
 <div>
-    @Html.ActionLink("Neuen Benutzer anlegen", "Create")
+    @Html.ActionLink("Insert new user Benutzer", "Create")
 </div>
 
 
@@ -22,14 +25,13 @@
         </tr>
         @foreach (PMSystem.Models.User user in Model)
         {
-        <tr>
-            <td>@user.Id</td>
-            <td>@user.Nachname</td>
-            <td>@user.Bundesland</td>
-            <td>@user.Land</td>
-            <td>@Html.ActionLink(linkText: "Bearbeiten", actionName: "Edit", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
-            <td>@Html.ActionLink(linkText: "Löschen", actionName: "Delete", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
-        </tr>
-        }
+<tr>
+    <td>@user.Id</td>
+    <td>@user.Nachname</td>
+    <td>@user.Bundesland</td>
+    <td>@user.Land</td>
+    <td>@Html.ActionLink(linkText: "Edit", actionName: "Edit", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
+    <td>@Html.ActionLink(linkText: "Delete", actionName: "Delete", controllerName: "User", routeValues: new { u_ID = @user.Id }, htmlAttributes: null)</td>
+</tr>}
     </table>
 </body>

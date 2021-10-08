@@ -1,6 +1,9 @@
 ﻿
-@{
-    ViewBag.Title = "Index";
+@{ ViewBag.Title = "Index"; }
+
+if (null != ViewBag.Errormessage)
+{
+    <div class="alert alert-danger">@ViewBag.Errormessage</div>
 }
 
 <h2>Index</h2>
