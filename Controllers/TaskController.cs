@@ -15,11 +15,12 @@ namespace PMSystem.Controllers
     [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
     public class TaskController : Controller
     {
-        PMSystemDbContext context;
+        private static string ADMIN_FEATURE = "admin@ymail.com";
+        private PMSystemDbContext context;
 
         public TaskController()
         {
-            this.context = new PMSystemDbContext();
+            context = new PMSystemDbContext();
         }
 
         //um den angemeldeten User zu bekommen
@@ -104,7 +105,7 @@ namespace PMSystem.Controllers
             {
                 // TODO: Add insert logic here
                 int projectID = int.Parse(p_ID);
-                if(projectID == 0 && collection["ProjektID"] == "")
+                if(projectID == 0 && TextUtil.checkIfEmpty(collection["ProjektID"]))
                 {
                     ViewBag.Errormessage = "Unkorrekt Projekt ID";
                     return View(p_ID, collection);
@@ -127,7 +128,7 @@ namespace PMSystem.Controllers
                     }
                     User currentUser = getCurrentUser();
 
-                    if(project.Owner.Id != currentUser.Id && currentUser.Id != 1)
+                    if(project.Owner.Id != currentUser.Id && currentUser.Email != ADMIN_FEATURE)
                     {
                         ViewBag.Errormessage = "Sie haben keine Berechtigung!";
                         return View();
@@ -216,7 +217,7 @@ namespace PMSystem.Controllers
                     {
                         User currentUser = getCurrentUser();
                         //Nur Admin oder Projekt Owner kann die Task bearbeiten
-                        if (currentUser.Id == 1 || currentUser.Id == task.Project.Owner.Id)
+                        if (currentUser.Email == ADMIN_FEATURE || currentUser.Id == task.Project.Owner.Id)
                         {
                             task.Name = collection["Name"];
                             task.Description = collection["Description"];
@@ -325,7 +326,7 @@ namespace PMSystem.Controllers
                         }
                     }
 
-                    if (project.Owner.Id == currentUser.Id || currentUser.Id == 1)
+                    if (project.Owner.Id == currentUser.Id || currentUser.Email == ADMIN_FEATURE)
                     {
                         //deleting all realated SubTasks
                         foreach(SubTask subTask in task.SubTasks)

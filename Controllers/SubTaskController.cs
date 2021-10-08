@@ -14,11 +14,12 @@ namespace PMSystem.Controllers
     [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
     public class SubTaskController : Controller
     {
-        PMSystemDbContext context;
+        private static string ADMIN_FEATURE = "admin@ymail.com";
+        private PMSystemDbContext context;
 
         public SubTaskController()
         {
-            this.context = new PMSystemDbContext();
+            context = new PMSystemDbContext();
         }
 
         //um den angemeldeten User zu bekommen
@@ -122,7 +123,7 @@ namespace PMSystem.Controllers
                     Task task = context.Tasks.FirstOrDefault(u => u.Id == taskID);
                     Project project = context.Projects.FirstOrDefault(p => p.Id == projectID);
 
-                    if (currentUser.Id != 1 && currentUser.Id != project.Owner.Id)
+                    if (currentUser.Email != ADMIN_FEATURE && currentUser.Id != project.Owner.Id)
                     {
                         ViewBag.Errormessage = "Sie haben keine Berechtigung";
                         return RedirectToAction("Index", "Project");
@@ -279,7 +280,7 @@ namespace PMSystem.Controllers
 
                         Project project = context.Projects.FirstOrDefault(p => p.Id == projectID);
 
-                        if (currentUser.Id == 1 || currentUser.Id == project.Owner.Id || currentUser.Id == subtask.User.Id)
+                        if (currentUser.Email == ADMIN_FEATURE || currentUser.Id == project.Owner.Id || currentUser.Id == subtask.User.Id)
                         {
                             subtask.Name = collection["Name"];
                             subtask.Description = collection["Description"];
@@ -404,7 +405,7 @@ namespace PMSystem.Controllers
                         }
                     }
 
-                    if (project.Owner.Id == currentUser.Id || currentUser.Id == 1)
+                    if (project.Owner.Id == currentUser.Id || currentUser.Email == ADMIN_FEATURE)
                     {
 
                         //Aktualisierung des 'Projekt' und 'Subtask' status.

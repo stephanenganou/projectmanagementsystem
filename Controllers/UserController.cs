@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using PMSystem.Utility;
 using WebGrease.Css.Ast.Selectors;
 
 namespace PMSystem.Controllers
@@ -15,10 +16,11 @@ namespace PMSystem.Controllers
     [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
     public class UserController : Controller
     {
-        PMSystemDbContext context;
+        private static string ADMIN_FEATURE = "admin@ymail.com";
+        private PMSystemDbContext context;
         public UserController()
         {
-            this.context = new PMSystemDbContext();
+            context = new PMSystemDbContext();
         }
         public User getCurrentUser()
         {
@@ -38,7 +40,8 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (getCurrentUser().Id != 1) return RedirectToAction("Index", "User");
+            if (getCurrentUser().Email != ADMIN_FEATURE)
+                return RedirectToAction("Index", "User");
 
             var users = (from us in context.Users select us);
             //ViewBag.Projects = (from ps in context.Projects select ps).ToList();
@@ -73,16 +76,16 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (u_ID != null || u_ID != "")
+            if (null != u_ID || u_ID != "")
             {
                 var currentUser = getCurrentUser();
                 int id = int.Parse(u_ID);
-                if(currentUser.Id == id || currentUser.Id == 1)
+                if(currentUser.Id == id || currentUser.Email == ADMIN_FEATURE)
                 {
-                    if(currentUser.Id == 1)
+                    if(currentUser.Email == ADMIN_FEATURE)
                     {
                         var user = context.Users.FirstOrDefault(u => u.Id == id);
-                        if(user != null)
+                        if(null != user)
                         {
                             return View(currentUser);
                         }
@@ -112,7 +115,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (getCurrentUser().Id == 1)
+            if (getCurrentUser().Email == ADMIN_FEATURE)
             {
                 return View();
             }
@@ -126,7 +129,7 @@ namespace PMSystem.Controllers
         {
             try
             {
-                if(getCurrentUser().Id == 1)
+                if(getCurrentUser().Email == ADMIN_FEATURE)
                 {
                     if (ModelState.IsValid)
                     {
@@ -163,7 +166,7 @@ namespace PMSystem.Controllers
             {
                 var user = getCurrentUser();
 
-                if (user.Id == 1 || user.Id == int.Parse(u_ID))
+                if (user.Email == ADMIN_FEATURE || user.Id == int.Parse(u_ID))
                 {
                     int id = int.Parse(u_ID);
                     var s_User = context.Users.FirstOrDefault(u => u.Id == id);
@@ -173,7 +176,8 @@ namespace PMSystem.Controllers
                 }
                 else
                 {
-                    if (editingUser.Id == 1 && !(u_ID.Equals("1")))
+                    User adminInfo = DataAccessUtil.getAdminInfoByEmail(context, ADMIN_FEATURE);
+                    if (editingUser.Email == ADMIN_FEATURE && !(u_ID.Equals(adminInfo.Email)))
                     {
                         return RedirectToAction("Admin", "User");
                     }
@@ -197,31 +201,31 @@ namespace PMSystem.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-                if (u_ID != null || u_ID == "")
+                
+                if (null != u_ID || TextUtil.checkIfEmpty(u_ID))
                 {
                     var user = getCurrentUser();
-                    bool admin = false;
+                    bool isAdmin = false;
                     int id = int.Parse(u_ID);
 
-                    if (user.Id != 1 && user.Id != id)
+                    if (user.Email != ADMIN_FEATURE && user.Id != id)
                     {
                         ViewBag.Errormessage = "Sie haben keine Berechtigung";
                         return RedirectToAction("Index", "User");
                     }
 
-                    if (user.Id == 1)
+                    if (user.Email == ADMIN_FEATURE)
                     {
                         user = context.Users.FirstOrDefault(u => u.Id == id);
-                        admin = true;
+                        isAdmin = true;
                     }
 
-                    if(admin || user.Id == id)
+                    if(isAdmin || user.Id == id)
                     {
                         user.Vorname = collection["Vorname"];
                         user.Nachname = collection["Nachname"];
                         user.Passwort = collection["Passwort"];
-                        if (admin) user.Level = int.Parse(collection["Level"]);
+                        if (isAdmin) user.Level = int.Parse(collection["Level"]);
                         user.Email = collection["Email"];
                         user.Address = collection["Address"];
                         user.PLZ = collection["PLZ"];
@@ -233,7 +237,7 @@ namespace PMSystem.Controllers
 
                         context.Users.AddOrUpdate(user);
                         context.SaveChanges();
-                        if(admin)
+                        if(isAdmin)
                         {
                             return RedirectToAction("Admin");
                         }
@@ -261,16 +265,18 @@ namespace PMSystem.Controllers
         // GET: User/Delete/5
         public ActionResult Delete(string u_ID)
         {
-            if(u_ID != null || u_ID != "")
+            if(null != u_ID || u_ID != "")
             {
                 User currentUser = getCurrentUser();
+                User adminInfo = DataAccessUtil.getAdminInfoByEmail(context, ADMIN_FEATURE);
+
                 int id = int.Parse(u_ID);
-                if(id != 1 && currentUser.Id == 1)
+                if(id != adminInfo.Id && currentUser.Id == adminInfo.Id)
                 {
-                    var uRemove = (from u in context.Users where u.Id == id select u).FirstOrDefault();
-                    if(uRemove != null)
+                    User userToRemove = (from u in context.Users where u.Id == id select u).FirstOrDefault();
+                    if(null != userToRemove)
                     {
-                        var projects = (from ps in context.Projects where ps.Owner.Id == uRemove.Id select ps).ToList();
+                        var projects = (from ps in context.Projects where ps.Owner.Id == userToRemove.Id select ps).ToList();
 
                         foreach(var data in projects)
                         {
@@ -280,7 +286,7 @@ namespace PMSystem.Controllers
                             context.Projects.AddOrUpdate(pro);
                         }
 
-                        context.Users.Remove(uRemove);
+                        context.Users.Remove(userToRemove);
                         context.SaveChanges();
                     }
                 }

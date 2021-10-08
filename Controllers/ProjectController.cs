@@ -24,7 +24,7 @@ namespace PMSystem.Controllers
 
         public ProjectController()
         {
-            this.context = new PMSystemDbContext();
+            context = new PMSystemDbContext();
         }
 
         // GET: Project
@@ -40,7 +40,7 @@ namespace PMSystem.Controllers
                 {
                     ViewBag.Projects = user.AssignedProjects;
                     List<Project> allProjects = new List<Project>();
-                    foreach (Project project in this.context.Projects)
+                    foreach (Project project in context.Projects)
                     {
                         if (!(allProjects.Contains(project)))
                         {
@@ -48,7 +48,7 @@ namespace PMSystem.Controllers
                         }
                     }
                     ViewBag.Active_Projects = allProjects;
-                    ViewBag.Subtasks = this.context.SubTasks.ToList();
+                    ViewBag.Subtasks = context.SubTasks.ToList();
                     return View(user.AssignedProjects);
                 }
             
@@ -69,7 +69,7 @@ namespace PMSystem.Controllers
 
                 Project matchedProject = null;
                 
-                foreach (Project project in this.context.Projects)
+                foreach (Project project in context.Projects)
                 {
                     if(project.Id == id)
                     {
@@ -98,7 +98,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            ViewBag.Users = this.context.Users.ToList();
+            ViewBag.Users = context.Users.ToList();
             User currentUser = getCurrentUser();
             List<SelectListItem> usersDropdown = new List<SelectListItem>();
 
@@ -153,13 +153,13 @@ namespace PMSystem.Controllers
                         else
                         {
                             int temp_ID = int.Parse(collection["Owner"]);
-                            User p_User = this.context.Users.FirstOrDefault(u => u.Id == temp_ID);
+                            User p_User = context.Users.FirstOrDefault(u => u.Id == temp_ID);
                             project.Owner = p_User;
                             project.AssignedUsers.Add(p_User);
                         }
                         project.Status = float.Parse(collection["Status"]);
-                        this.context.Projects.Add(project);
-                        this.context.SaveChanges();
+                        context.Projects.Add(project);
+                        context.SaveChanges();
                         p_ID = "" + project.Id;
                         return RedirectToAction("Create", "Task", new { p_ID = p_ID });
                     }
@@ -189,11 +189,11 @@ namespace PMSystem.Controllers
             if (!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
-                Project project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
+                Project project = (from p in context.Projects where p.Id == id select p).FirstOrDefault();
                 if(null != project)
                 {
                     //ViewBag.Tasks = context.Tasks.Where(t => t.Project.Id == project.Id).ToList();
-                    ViewBag.Users = (from us in this.context.Users select us).ToList();
+                    ViewBag.Users = (from us in context.Users select us).ToList();
                     List<SelectListItem> usersDropdown = new List<SelectListItem>();
                     foreach (User user in ViewBag.Users)
                     {
@@ -223,7 +223,7 @@ namespace PMSystem.Controllers
                     {
                         int id = int.Parse(p_ID);
                         User currentUser = getCurrentUser();
-                        Project project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
+                        Project project = (from p in context.Projects where p.Id == id select p).FirstOrDefault();
 
                         // Only projects owner or admin can edit projects
                         if (null != project && (ADMIN_FEATURE == currentUser.Email || currentUser.Id == project.Owner.Id))
@@ -234,7 +234,7 @@ namespace PMSystem.Controllers
                             if (!TextUtil.checkIfEmpty(collection["Owner"]))
                             {
                                 int temp_ID = int.Parse(collection["Owner"]);
-                                User p_User = this.context.Users.FirstOrDefault(u => u.Id == temp_ID);
+                                User p_User = context.Users.FirstOrDefault(u => u.Id == temp_ID);
                                 
                                 // Reset Owner only if different
                                 if(project.Owner.Id != p_User.Id)
@@ -246,7 +246,7 @@ namespace PMSystem.Controllers
                                     if (ADMIN_FEATURE != p_User.Email && p_User.Level < 2)
                                     {
                                         p_User.Level = 2;
-                                        this.context.Users.AddOrUpdate(p_User);
+                                        context.Users.AddOrUpdate(p_User);
                                     }
                                 }
 
@@ -255,8 +255,8 @@ namespace PMSystem.Controllers
                             project.Status = float.Parse(collection["Status"]);
 
                             // We save all the changes in the Model Project;
-                            this.context.Projects.AddOrUpdate(project);
-                            this.context.SaveChanges();
+                            context.Projects.AddOrUpdate(project);
+                            context.SaveChanges();
 
                             return RedirectToAction("Index", "Project");
                         }
@@ -301,9 +301,9 @@ namespace PMSystem.Controllers
                     {
                         deleteProjectContain(project);
                     }
-                    this.context.Projects.Remove(project);
+                    context.Projects.Remove(project);
                                        
-                    this.context.SaveChanges();
+                    context.SaveChanges();
                 }
                 else
                 {
@@ -322,11 +322,11 @@ namespace PMSystem.Controllers
                 {
                     foreach (SubTask subTask in task.SubTasks.ToList())
                     {
-                        this.context.SubTasks.Remove(context.SubTasks.FirstOrDefault(s => s.Id == subTask.Id));
+                        context.SubTasks.Remove(context.SubTasks.FirstOrDefault(s => s.Id == subTask.Id));
                     }
                 }
 
-                this.context.Tasks.Remove(this.context.Tasks.FirstOrDefault(t => t.Id == task.Id));
+                context.Tasks.Remove(context.Tasks.FirstOrDefault(t => t.Id == task.Id));
             }
         }
 
