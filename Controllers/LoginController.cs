@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using PMSystem.Utility;
 
 namespace PMSystem.Controllers
 {
@@ -32,7 +33,7 @@ namespace PMSystem.Controllers
 
             using (var ctx = new PMSystemDbContext())
             {
-                if (!String.IsNullOrEmpty(request.Username) && !String.IsNullOrEmpty(request.Password))
+                if (!TextUtil.checkIfEmpty(request.Username) && !TextUtil.checkIfEmpty(request.Password))
                 {
                     //First search in the DB
                     var user = ctx.Users.FirstOrDefault(u => u.Email == request.Username && u.Passwort == request.Password);

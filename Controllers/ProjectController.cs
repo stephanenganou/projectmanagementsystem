@@ -63,7 +63,6 @@ namespace PMSystem.Controllers
             ViewBag.Currentuser = User.Identity.Name;
             ViewBag.ProjectOwner = null;
 
-            //if (!(String.IsNullOrEmpty(p_ID)))
             if(!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
@@ -139,7 +138,6 @@ namespace PMSystem.Controllers
                         project.Name = collection["Name"];
                         project.Description = collection["Description"];
                         
-                        //if (String.IsNullOrEmpty(collection["Owner"]))
                         if (TextUtil.checkIfEmpty(collection["Owner"]))
                         {
                             project.Owner = currentUser;
@@ -187,8 +185,7 @@ namespace PMSystem.Controllers
         public ActionResult Edit(string p_ID)
         {
             ViewBag.Currentuser = User.Identity.Name;
-
-            //if (!(String.IsNullOrEmpty(p_ID)))
+                        
             if (!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
@@ -220,7 +217,7 @@ namespace PMSystem.Controllers
             try
             {
                
-                if(!String.IsNullOrEmpty(p_ID))
+                if(!TextUtil.checkIfEmpty(p_ID))
                 {
                     if (ModelState.IsValid)
                     {
@@ -234,7 +231,6 @@ namespace PMSystem.Controllers
                             project.Name = collection["Name"];
                             project.Description = collection["Description"];
 
-                            //if (!String.IsNullOrEmpty(collection["Owner"]))
                             if (!TextUtil.checkIfEmpty(collection["Owner"]))
                             {
                                 int temp_ID = int.Parse(collection["Owner"]);
@@ -290,8 +286,7 @@ namespace PMSystem.Controllers
         {
             
             var referer = Request.UrlReferrer;
-
-            //if (!(String.IsNullOrEmpty(p_ID)))
+                        
             if (!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);

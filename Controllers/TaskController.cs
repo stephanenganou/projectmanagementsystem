@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
+using PMSystem.Utility;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
@@ -40,7 +41,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (!(String.IsNullOrEmpty(t_ID)))
+            if (!TextUtil.checkIfEmpty(t_ID))
             {
                 int id = int.Parse(t_ID);
                 Task task = context.Tasks.FirstOrDefault(t => t.Id == id);
@@ -179,7 +180,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (!(String.IsNullOrEmpty(t_ID)))
+            if (!TextUtil.checkIfEmpty(t_ID))
             {
                 int id = int.Parse(t_ID);
                 Task task = (from t in context.Tasks where t.Id == id select t).FirstOrDefault();
@@ -289,7 +290,7 @@ namespace PMSystem.Controllers
         // GET: Task/Delete/5
         public ActionResult Delete(string t_ID)
         {
-            if (!(String.IsNullOrEmpty(t_ID)))
+            if (!TextUtil.checkIfEmpty(t_ID))
             {
                 int id = int.Parse(t_ID);
                 User currentUser = getCurrentUser();
