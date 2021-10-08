@@ -1,7 +1,7 @@
 ﻿@model PMSystem.Models.Project
 
 @{
-    ViewBag.Title = "Projekt erstellen";
+    ViewBag.Title = "Create Project";
 }
 
 <h2>Create</h2>
@@ -42,7 +42,7 @@
             @Html.LabelFor(model => model.Owner, htmlAttributes: new { @class = "control.label col-md-2" })
             <div class="col-md-10">
                 @ViewBag.UserEnum
-                @Html.DropDownListFor(model => model.Owner, (IEnumerable<SelectListItem>)ViewBag.UsersSelectList, "Projekt-Owner auswählen", new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.Owner, (IEnumerable<SelectListItem>)ViewBag.UsersSelectList, "Select Project Owner", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Owner, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -56,5 +56,5 @@
 }
 
 <div>
-    @Html.ActionLink("Zurück zur Übersicht", "Index")
+    @Html.ActionLink("Go back to Overview", "Index")
 </div>

@@ -16,7 +16,7 @@
 <h3>Dashboard von: @ViewBag.Currentuser</h3>
 
 <body>
-    @if (ViewBag.Currentuser != null && ViewBag.Currentuser.Equals("admin@ymail.com"))
+    @if (null != ViewBag.Currentuser && ViewBag.Currentuser.Equals("admin@ymail.com"))
     {
         <h3>Projektliste</h3>
         <hr />
@@ -29,7 +29,7 @@
                 <th>Bearbeiten</th>
                 <th>Löschen</th>
             </tr>
-            @foreach (PMSystem.Models.Project project in ViewBag.Users)
+            @foreach (PMSystem.Models.Project project in ViewBag.Active_Projects)
             {
                 <tr>
                     <td>@project.Id</td>
@@ -62,7 +62,7 @@
             </tr>
             @foreach (PMSystem.Models.Project project in ViewBag.Projects)
             {
-                if (project.Owner != null && ViewBag.Currentuser.Equals(project.Owner.Email))
+                if (null != project.Owner && ViewBag.Currentuser.Equals(project.Owner.Email))
                 {
                     <tr>
                         <td>@project.Name</td>
@@ -88,13 +88,13 @@
             <th>Subtask-Status</th>
         </tr>
 
-        @foreach (PMSystem.Models.Project project in ViewBag.Users)
+        @foreach (PMSystem.Models.Project project in ViewBag.Active_Projects)
         {
             foreach (PMSystem.Models.Task task in project.Tasks)
             {
                 foreach (PMSystem.Models.SubTask subtask in task.SubTasks)
                 {
-                    if (subtask.User != null && subtask.User.Email.Equals(ViewBag.Currentuser))
+                    if (null != subtask.User && subtask.User.Email.Equals(ViewBag.Currentuser))
                     {
                         <tr>
                             <td>@Html.ActionLink(linkText: project.Name, actionName: "Details", controllerName: "Project", routeValues: new { p_ID = project.Id }, htmlAttributes: null)</td>

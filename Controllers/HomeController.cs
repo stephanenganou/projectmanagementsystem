@@ -9,13 +9,14 @@ namespace PMSystem.Controllers
     {
         private PMSystemDbContext context;
 
+        private User getCurrentUser()
+        {
+            return context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
+        }
+
         public HomeController()
         {
             this.context = new PMSystemDbContext();
-        }
-        public User getCurrentUser()
-        {
-            return context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
         }
         public ActionResult Index()
         {

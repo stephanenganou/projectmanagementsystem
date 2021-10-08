@@ -36,7 +36,7 @@ namespace PMSystem.Controllers
                 {
                     //First search in the DB
                     var user = ctx.Users.FirstOrDefault(u => u.Email == request.Username && u.Passwort == request.Password);
-                    if( user != null)
+                    if(null != user)
                     {
                         // "false" to say we don't want the cookie to be persistent, and delete after a log out.
                         FormsAuthentication.SetAuthCookie(user.Email, false);
