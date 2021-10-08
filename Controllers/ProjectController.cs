@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web.Mvc;
+using PMSystem.Utility;
 
 namespace PMSystem.Controllers
 {
@@ -30,7 +31,7 @@ namespace PMSystem.Controllers
         public ActionResult Index()
         {
             //List<Project> projects;
-            var user = getCurrentUser();
+            User user = getCurrentUser();
             ViewBag.Currentuser = User.Identity.Name;
             ViewBag.UserLevel = user.Level.ToString();
 
@@ -62,7 +63,8 @@ namespace PMSystem.Controllers
             ViewBag.Currentuser = User.Identity.Name;
             ViewBag.ProjectOwner = null;
 
-            if (!(String.IsNullOrEmpty(p_ID)))
+            //if (!(String.IsNullOrEmpty(p_ID)))
+            if(!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
 
@@ -100,7 +102,9 @@ namespace PMSystem.Controllers
             ViewBag.Users = this.context.Users.ToList();
             User currentUser = getCurrentUser();
             List<SelectListItem> usersDropdown = new List<SelectListItem>();
-            if (currentUser.Level >= 3)
+
+            // Only Admin can select other users an Project owner
+            if (ADMIN_FEATURE == currentUser.Email)
             {
                 foreach (User user in ViewBag.Users)
                 {
@@ -121,12 +125,12 @@ namespace PMSystem.Controllers
         {
             try
             {
-                var p_ID = "";
+                string p_ID = "";
 
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    var currentUser = getCurrentUser();
+                    User currentUser = getCurrentUser();
 
                     //nur admin and project owners
                     if (currentUser.Email == ADMIN_FEATURE || currentUser.Level >= 2)
@@ -134,7 +138,9 @@ namespace PMSystem.Controllers
                         Project project = new Project();
                         project.Name = collection["Name"];
                         project.Description = collection["Description"];
-                        if (String.IsNullOrEmpty(collection["Owner"]))
+                        
+                        //if (String.IsNullOrEmpty(collection["Owner"]))
+                        if (TextUtil.checkIfEmpty(collection["Owner"]))
                         {
                             project.Owner = currentUser;
                             project.AssignedUsers.Add(currentUser);
@@ -148,7 +154,7 @@ namespace PMSystem.Controllers
                         }
                         else
                         {
-                            var temp_ID = int.Parse(collection["Owner"]);
+                            int temp_ID = int.Parse(collection["Owner"]);
                             User p_User = this.context.Users.FirstOrDefault(u => u.Id == temp_ID);
                             project.Owner = p_User;
                             project.AssignedUsers.Add(p_User);
@@ -182,10 +188,11 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (!(String.IsNullOrEmpty(p_ID)))
+            //if (!(String.IsNullOrEmpty(p_ID)))
+            if (!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
-                var project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
+                Project project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
                 if(null != project)
                 {
                     //ViewBag.Tasks = context.Tasks.Where(t => t.Project.Id == project.Id).ToList();
@@ -218,8 +225,8 @@ namespace PMSystem.Controllers
                     if (ModelState.IsValid)
                     {
                         int id = int.Parse(p_ID);
-                        var currentUser = getCurrentUser();
-                        var project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
+                        User currentUser = getCurrentUser();
+                        Project project = (from p in this.context.Projects where p.Id == id select p).FirstOrDefault();
 
                         // Only projects owner or admin can edit projects
                         if (null != project && (ADMIN_FEATURE == currentUser.Email || currentUser.Id == project.Owner.Id))
@@ -227,9 +234,10 @@ namespace PMSystem.Controllers
                             project.Name = collection["Name"];
                             project.Description = collection["Description"];
 
-                            if (!String.IsNullOrEmpty(collection["Owner"]))
+                            //if (!String.IsNullOrEmpty(collection["Owner"]))
+                            if (!TextUtil.checkIfEmpty(collection["Owner"]))
                             {
-                                var temp_ID = int.Parse(collection["Owner"]);
+                                int temp_ID = int.Parse(collection["Owner"]);
                                 User p_User = this.context.Users.FirstOrDefault(u => u.Id == temp_ID);
                                 
                                 // Reset Owner only if different
@@ -283,14 +291,15 @@ namespace PMSystem.Controllers
             
             var referer = Request.UrlReferrer;
 
-            if (!(String.IsNullOrEmpty(p_ID)))
+            //if (!(String.IsNullOrEmpty(p_ID)))
+            if (!TextUtil.checkIfEmpty(p_ID))
             {
                 int id = int.Parse(p_ID);
                 User currentUser = getCurrentUser();
-                var project = (from p in context.Projects where p.Id == id select p).FirstOrDefault();
+                Project project = (from p in context.Projects where p.Id == id select p).FirstOrDefault();
                 
                 // Only Admin or Project Owner can delete a specific project.
-                if(project != null && (ADMIN_FEATURE == currentUser.Email || currentUser.Id == project.Owner.Id))
+                if(null != project && (ADMIN_FEATURE == currentUser.Email || currentUser.Id == project.Owner.Id))
                 {
                     // Deleting all tasks (and subtasks) in Project
                     if (project.Tasks.Count() >= 1)
@@ -298,8 +307,7 @@ namespace PMSystem.Controllers
                         deleteProjectContain(project);
                     }
                     this.context.Projects.Remove(project);
-
-                    // Delete all tasks in Project
+                                       
                     this.context.SaveChanges();
                 }
                 else
