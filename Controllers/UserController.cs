@@ -13,7 +13,8 @@ using WebGrease.Css.Ast.Selectors;
 
 namespace PMSystem.Controllers
 {
-    [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
+    //it makes sure to check for a valide user before allowing access to this action(s)
+    [Authorize]
     public class UserController : Controller
     {
         private static string ADMIN_FEATURE = "admin@ymail.com";
@@ -30,8 +31,8 @@ namespace PMSystem.Controllers
         public ActionResult Index()
         {
             User currentuser = getCurrentUser();
-            //ViewBag.Currentuser = currentuser;
             ViewBag.Currentuser = currentuser.Email;
+
             return View(currentuser);   
         }
 
@@ -44,7 +45,6 @@ namespace PMSystem.Controllers
                 return RedirectToAction("Index", "User");
 
             var users = (from us in context.Users select us);
-            //ViewBag.Projects = (from ps in context.Projects select ps).ToList();
 
             return View(users);
         }
@@ -76,7 +76,7 @@ namespace PMSystem.Controllers
         {
             ViewBag.Currentuser = User.Identity.Name;
 
-            if (null != u_ID || u_ID != "")
+            if (!TextUtil.checkIfEmpty(u_ID))
             {
                 var currentUser = getCurrentUser();
                 int id = int.Parse(u_ID);
@@ -91,20 +91,21 @@ namespace PMSystem.Controllers
                         }
                         else
                         {
-                            ViewBag.Errormessage = "Kein User gefunden.";
+                            ViewBag.Errormessage = "No user found.";
                         }
                     }
+
                     return View(currentUser);
                 }
                 else
                 {
-                    ViewBag.Errormessage = "Sie haben keine Berechtigung";
+                    ViewBag.Errormessage = "You have no authorization";
                 }
 
             }
             else
             {
-                ViewBag.Errormessage = "Ungültige ID Nummer.";
+                ViewBag.Errormessage = "Invalid ID number.";
             }
 
             return View();
@@ -171,7 +172,7 @@ namespace PMSystem.Controllers
                     int id = int.Parse(u_ID);
                     var s_User = context.Users.FirstOrDefault(u => u.Id == id);
                     if (s_User != null) return View(s_User);
-                    ViewBag.Errormessage = "Der Benutzer mit der ID '" + u_ID + "' wurde nicht gefunden.";
+                    ViewBag.Errormessage = "The user with ID '" + u_ID + "' was not found.";
                     return View();
                 }
                 else
@@ -190,7 +191,7 @@ namespace PMSystem.Controllers
             }
             else
             {
-                ViewBag.Errormessage = "Die ID der User ist ungültig";
+                ViewBag.Errormessage = "The ID of the user is invalid";
                 return View();
             }
         }
@@ -210,7 +211,7 @@ namespace PMSystem.Controllers
 
                     if (user.Email != ADMIN_FEATURE && user.Id != id)
                     {
-                        ViewBag.Errormessage = "Sie haben keine Berechtigung";
+                        ViewBag.Errormessage = "You have no authorization";
                         return RedirectToAction("Index", "User");
                     }
 
@@ -247,17 +248,17 @@ namespace PMSystem.Controllers
                         }
                     }
                     else {
-                        ViewBag.Errormessage = "Sie haben keine Berechtigung";
+                        ViewBag.Errormessage = "You have no authorization";
                         return View(collection);
                     }
                     
                 }
-                ViewBag.Errormessage = "Die ID der User ist ungültigt";
+                ViewBag.Errormessage = "The ID of the user is invalid";
                 return View(collection);
             }
             catch
             {
-                ViewBag.Errormessage = "Ein Fehler ist aufgetreten";
+                ViewBag.Errormessage = "An error has occurred";
                 return View();
             }
         }
@@ -281,7 +282,7 @@ namespace PMSystem.Controllers
                         foreach(var data in projects)
                         {
                             Project pro = context.Projects.FirstOrDefault(p => p.Id == data.Id);
-                            //Der neuer Owner wird der Admin sein
+                            //The new owner will be the admin
                             pro.Owner = currentUser;
                             context.Projects.AddOrUpdate(pro);
                         }
@@ -292,12 +293,12 @@ namespace PMSystem.Controllers
                 }
                 else
                 {
-                    ViewBag.Errormessage = "Der Admin can nicht manuell gelöscht oder Sie haben nicht die Berechtigung.";
+                    ViewBag.Errormessage = "The admin can not manually deleted or you do not have permission.";
                 }
             }
             else
             {
-                ViewBag.Errormessage = "Id '" + u_ID + "' wurde nicht angegeben.";
+                ViewBag.Errormessage = "Id '" + u_ID + "' was not specified.";
             }
 
             return RedirectToAction("Admin", "User");

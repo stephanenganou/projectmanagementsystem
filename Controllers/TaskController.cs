@@ -12,7 +12,8 @@ using System.Web.UI.WebControls;
 
 namespace PMSystem.Controllers
 {
-    [Authorize] //it tells, checks for a valide user before allowing access to this action(s)
+    //it makes sure to check for a valide user before allowing access to this action(s)
+    [Authorize]
     public class TaskController : Controller
     {
         private static string ADMIN_FEATURE = "admin@ymail.com";
@@ -23,7 +24,7 @@ namespace PMSystem.Controllers
             context = new PMSystemDbContext();
         }
 
-        //um den angemeldeten User zu bekommen
+        //to get the registered user
         public User getCurrentUser()
         {
             return context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
@@ -48,8 +49,7 @@ namespace PMSystem.Controllers
                 Task task = context.Tasks.FirstOrDefault(t => t.Id == id);
                 if (task != null)
                 {
-                    //ViewBag.Tasks = from projects in context.Projects select projects.Id == id;
-                    //ViewBag.SubTasks = context.SubTasks.Where(s => s.Task.Id == task.Id).ToList();
+                    
                     List<Project> allProjects = new List<Project>();
                     foreach (User user_iterator in context.Users)
                     {
@@ -80,7 +80,7 @@ namespace PMSystem.Controllers
                 }
                 else
                 {
-                    ViewBag.Errormessage = "Task mit der ID: '" + t_ID + "' wurde nicht gefunden";
+                    ViewBag.Errormessage = "Task with ID: '" + t_ID + "' was not found";
                 }
             }
 
@@ -103,11 +103,11 @@ namespace PMSystem.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
+               
                 int projectID = int.Parse(p_ID);
                 if(projectID == 0 && TextUtil.checkIfEmpty(collection["ProjektID"]))
                 {
-                    ViewBag.Errormessage = "Unkorrekt Projekt ID";
+                    ViewBag.Errormessage = "Incorrect Project ID;
                     return View(p_ID, collection);
                 }
 
@@ -130,7 +130,7 @@ namespace PMSystem.Controllers
 
                     if(project.Owner.Id != currentUser.Id && currentUser.Email != ADMIN_FEATURE)
                     {
-                        ViewBag.Errormessage = "Sie haben keine Berechtigung!";
+                        ViewBag.Errormessage = "You have no authorization!";
                         return View();
                     }
 
@@ -139,9 +139,7 @@ namespace PMSystem.Controllers
                     task.Description = collection["Description"];
                     task.Status = float.Parse(collection["Status"]);
                     task.Project = project;
-                    //How do we do, to Assign new Users?
 
-                    //Anzahl Tasks + 1(für die Neue Task)
                     int taskCounter = project.Tasks.Count() + 1;
                     Debug.WriteLine("number of Tasks in the Project= " + taskCounter);
                     if(project.Status != 0 || project.Status != 0.0)
@@ -161,8 +159,7 @@ namespace PMSystem.Controllers
                     context.Tasks.Add(task);
                     context.SaveChanges();
 
-                    string t_ID = "" + task.Id;
-                    //bevor weiterzugehen, fragen, ob anderen Tasks hinzugefügt werden
+                    string t_ID = task.Id.ToString();
 
                     return RedirectToAction("Create", "SubTask", new { p_ID = p_ID, t_ID = t_ID });
                 }
@@ -191,7 +188,7 @@ namespace PMSystem.Controllers
                 return View(task);
             }
 
-            ViewBag.Errormessage = "Der Task mit der ID '" + t_ID + "' existiert nicht.";
+            ViewBag.Errormessage = "The task with ID '" + t_ID + "' does not exist.";
             return View();
         }
 
@@ -201,12 +198,11 @@ namespace PMSystem.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-
+                
                 int id = int.Parse(t_ID);
-                if (id == 0) //collection["User"]
+                if (id == 0)
                 {
-                    ViewBag.Errormessage = "Unkorrekt Task ID";
+                    ViewBag.Errormessage = "Incorrect Task ID";
                     return View(collection);
                 }
 
@@ -216,18 +212,14 @@ namespace PMSystem.Controllers
                     if(task != null)
                     {
                         User currentUser = getCurrentUser();
-                        //Nur Admin oder Projekt Owner kann die Task bearbeiten
+                        //Only Admin or Project Owner can edit the Task
                         if (currentUser.Email == ADMIN_FEATURE || currentUser.Id == task.Project.Owner.Id)
                         {
                             task.Name = collection["Name"];
                             task.Description = collection["Description"];
                             task.Status = float.Parse(collection["Status"]);
-                            //Assign Users
-                            //task.Project = project;
-                            //How do we do, to Assign new Users?
 
-                            /*Aktualisierung des 'Projekt' und 'Subtask' status.*/
-                            //Anzahl Tasks
+                            // Update the 'Project' and 'Subtask' status.
                             int projectID = 0;
                             var query =
                                 from t in context.Tasks
@@ -271,12 +263,12 @@ namespace PMSystem.Controllers
                         }
 
 
-                        ViewBag.Errormessage = "Sind haben kein Berechtigung, um diese Aktion durchzuführen.";
+                        ViewBag.Errormessage = "You do not have authorization to perform this action.";
                         return View(collection);
                     }
                     else
                     {
-                        ViewBag.Errormessage = "Kein Subtask mit der ID '" + t_ID + "' wurde gefunden.";
+                        ViewBag.Errormessage = "No subtask with ID '" + t_ID + "' was found.";
                     }
 
                 }
@@ -334,7 +326,7 @@ namespace PMSystem.Controllers
                             context.SubTasks.Remove(subTask);
                         }
 
-                        //Aktualisierung des 'Projekt'
+                        //Update the 'Project'
                         int taskCounter = project.Tasks.Count() - 1;
 
                         float total_status = 0;
@@ -362,17 +354,17 @@ namespace PMSystem.Controllers
                     }
                     else
                     {
-                        ViewBag.Errormessage = "Sie haben keine Berechtigung, diese Task  zu löschen";
+                        ViewBag.Errormessage = "You do not have permission to delete this task";
                     }
                 }
                 else
                 {
-                    ViewBag.Errormessage = "Keine Task mit der ID '" + t_ID + "' wurde gefunden.";
+                    ViewBag.Errormessage = "No task with ID '" + t_ID + "' was found.";
                 }
             }
             else
             {
-                ViewBag.Errormessage = "Unkorrekt Task ID";
+                ViewBag.Errormessage = "Incorrect Task ID";
             }
 
             //How to redirect to coming Link || it looks to work

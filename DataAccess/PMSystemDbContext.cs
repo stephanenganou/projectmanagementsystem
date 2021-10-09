@@ -10,7 +10,6 @@ namespace PMSystem.DataAccess
     public class PMSystemDbContext : DbContext
     {
         public PMSystemDbContext() : base("PMSystemFinalDB") { }
-        //public PMSystemDbContext() : base("Test") { }
             public virtual DbSet<Project> Projects { get; set; }
             public virtual DbSet<SubTask> SubTasks { get; set; }
             public virtual DbSet<Task> Tasks { get; set; }
@@ -72,7 +71,6 @@ namespace PMSystem.DataAccess
 
         }
 
-        //public System.Data.Entity.DbSet<PMSystem.Models.UserProjects> UserProjects { get; set; }
     }
     
     
