@@ -1,5 +1,12 @@
 # project description
 
+###Goal:
+In the project, an MVP of a project management system is to be realized, which makes it possible to create projects and delegate task packages to employees.
+
+###Brief description:
+Within the project a project management system (MVP) was developed. The system offered the possibility to create projects and to add tasks or subtasks to them. The created tasks and subtasks could be assigned to employees.
+In addition, there was a simple user administration.
+
 The individual user roles to be assumed (administrator, project owner, project participant) are described in more detail below. In particular, the rights regarding the use of the 
 rights regarding the use of the "PM System" website. The users get the 
 possibility, depending on the assigned rights, to create and edit projects, to assign users to projects 
